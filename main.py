@@ -69,6 +69,20 @@ app = FastAPI(
     lifespan=lifespan # Attach the loading function
 )
 
+ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # Always keep this for local testing
+    "https://your-frontend-app.com", # Example
+    "https://api.your-backend-service.net", # <-- REPLACE WITH YOUR DEPLOYED BACKEND DOMAIN
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=ALLOWED_ORIGINS,  # Only these domains can make requests
+    allow_credentials=True,
+    allow_methods=["POST"],         # Only allow POST requests (GET is fine for /health)
+    allow_headers=["*"],            # Allow all headers
+)
+
 # --- 4. Define the API Endpoint ---
 @app.post("/recommendation", response_model=QueryResponse)
 async def get_recommendation(request: QueryRequest):
